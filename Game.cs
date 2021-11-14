@@ -6,24 +6,45 @@ public class Game : GameBoard
     private static int _defaultWormLength = 5;
     private List<Fruit> _fruits;
     private Worm _theWorm;
-    private bool _gameRunning = false;
     private Thread _gameThread;
     public Game(int left, int top, int height):
     base(left, top, height)
     {
         _theWorm = new Worm(Left+Width/2, Top+Height/2, _defaultWormLength);
-
-        Console.SetCursorPosition(Left+1, Top-1);
-        Console.Write("Worm length: {0}", _defaultWormLength);
         
-        GenerateFruits(3,8);
-
-        _gameThread = new Thread(RunGame);
     }
     public void StartGame()
     {
+        _gameThread = new Thread(RunGame);
+
+        Console.SetCursorPosition(Left+1, Top-1);
+        Console.Write("Worm length: {0}", _defaultWormLength);
+
+        Console.SetCursorPosition(Left+Width/8, _theWorm.Top-3);
+        Console.Write("Welcome to Worm, press any key to start!");
+        Console.ReadKey(true);
+
+        Console.SetCursorPosition(_theWorm.Left, _theWorm.Top-1);
+        Console.Write("3...");
+        Thread.Sleep(1000);
+        Console.SetCursorPosition(_theWorm.Left, _theWorm.Top-1);
+        Console.Write("2...");
+        Thread.Sleep(1000);
+        Console.SetCursorPosition(_theWorm.Left, _theWorm.Top-1);
+        Console.Write("1...");
+        Thread.Sleep(1000);
+        Console.SetCursorPosition(_theWorm.Left, _theWorm.Top-1);
+        Console.Write("Go!   ");
+        Thread.Sleep(1000);
+        Console.SetCursorPosition(Left+Width/8, _theWorm.Top-3);
+        Console.Write("".PadRight(50));
+        Console.SetCursorPosition(_theWorm.Left, _theWorm.Top-1);
+        Console.Write("".PadRight(6));
+
+        DrawBoard();
+        GenerateFruits(3,8);
+
         _gameThread.Start();
-        _gameRunning = true;
         GetInput();
     }
     private void RunGame()
@@ -38,14 +59,29 @@ public class Game : GameBoard
                 Console.Write("Worm length: {0}", _theWorm.Length);
             }else if(GameOver())
             {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.SetCursorPosition(Left+Width/4, Top+Height/2-3);
+                Console.Write("You LOSE!!");
+                Console.ResetColor();
+
+                Console.SetCursorPosition(Left+Width/4, Top+Height/2-2);
+                Console.Write("Press any key to restart");
                 return;
             }
-            Thread.Sleep(250);
+            Thread.Sleep(CalcSpeed());
         }
     }
     private bool GameOver()
     {
-        
+        if(_theWorm.Left <= Left) return true;
+        if(_theWorm.Top <= Top) return true;
+        if(_theWorm.Left >= Left+Width) return true;
+        if(_theWorm.Top >= Top+Height) return true;
+        foreach(WormSegment seg in _theWorm.Segments)
+        {
+            if(_theWorm.Top == seg.Top && _theWorm.Left == seg.Left) return true;
+        }
+        return false;
     }
     private bool AteFruit()
     {
@@ -66,6 +102,7 @@ public class Game : GameBoard
     
     private void GetInput()
     {
+        
         while(_gameThread.IsAlive)
         {
             switch(Console.ReadKey(true).Key)
@@ -84,7 +121,23 @@ public class Game : GameBoard
                 break;
             }
         }
-        // Restart();
+        Console.SetCursorPosition(Left+Width/4, Top+Height/2-3);
+        Console.Write("".PadRight(50));
+        Console.SetCursorPosition(Left+Width/4, Top+Height/2-2);
+        Console.Write("".PadRight(50));
+        
+        Restart();
+    }
+    public void Restart()
+    {
+        Console.SetCursorPosition(Left+1, Top-1);
+        Console.Write("".PadRight(40));
+        _theWorm.EraseWorm();
+        foreach(Fruit fruit in _fruits) fruit.Erase();
+        _fruits = new List<Fruit>();
+        DrawBoard();
+        _theWorm = new Worm(Left+Width/2, Top+Height/2, _defaultWormLength);
+        StartGame();
     }
     private void GenerateFruits(int min, int max)
     {
@@ -96,5 +149,12 @@ public class Game : GameBoard
             _fruits.Add(new Fruit(Left, Top, Height));
             numberOfFruits--;
         }
+    }
+    private int CalcSpeed()
+    {
+        int fruitsComsumed = _theWorm.Length - _defaultWormLength;
+        int delay = 250 - fruitsComsumed*10;
+        if(delay<30) return 30;
+        return delay;
     }
 }

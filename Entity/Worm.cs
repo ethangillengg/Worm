@@ -3,35 +3,34 @@ using System.Collections.Generic;
 public class Worm : WormSegment
 {
     public int Length{
-        get => _segments.Count + 1;
+        get => Segments.Count + 1;
         set
         {
             if(value<1) return;
             while(Length<value)
             {
-                // Console.ResetColor();
-                _segments.Add(new WormSegment(
-                    _segments[Length-2].Left,
-                    _segments[Length-2].Top));
+                Segments.Add(new WormSegment(
+                    Segments[Length-2].Left,
+                    Segments[Length-2].Top));
             }
             while(Length > value)
             {
-                _segments[Length-2].Erase();
-                _segments.RemoveAt(Length-2);
+                Segments[Length-2].Erase();
+                Segments.RemoveAt(Length-2);
             }
         }
     }
-    private List<WormSegment> _segments; 
+    public List<WormSegment> Segments; 
     public ConsoleKey Input{get; set;} = ConsoleKey.A; 
     public Worm(int left, int top, int length):base(left,top)
     {
         _color = ConsoleColor.Red;
         Draw();
 
-        _segments = new List<WormSegment>();
+        Segments = new List<WormSegment>();
         while(--length > 0)
         {
-            _segments.Add(new WormSegment( ++left,_top));
+            Segments.Add(new WormSegment( ++left,_top));
         }
     }
 
@@ -55,9 +54,20 @@ public class Worm : WormSegment
 
         for(int i = 0; i < Length-1; i++)
         {
-            temp = new Tuple<int, int>(_segments[i].Left, _segments[i].Top);
-            (_segments[i].Left, _segments[i].Top) = prevSegPos;
+            temp = new Tuple<int, int>(Segments[i].Left, Segments[i].Top);
+            (Segments[i].Left, Segments[i].Top) = prevSegPos;
             prevSegPos = temp;
+        }
+    }
+    public void EraseWorm()
+    {
+        Console.SetCursorPosition(Left,Top);
+        System.Console.Write(" ");
+
+        foreach(WormSegment seg in Segments)
+        {
+            Console.SetCursorPosition(seg.Left,seg.Top);
+            System.Console.Write(" ");
         }
     }
 

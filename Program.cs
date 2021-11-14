@@ -7,7 +7,7 @@ namespace WormGame
         static void Main(string[] args)
         {
             Console.CursorVisible = false;
-            var game = new Game(10,3,20);
+            var game = new Game(10,3,25);
             game.StartGame();
         }
     }
