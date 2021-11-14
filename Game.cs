@@ -22,7 +22,9 @@ public class Game : GameBoard
 
         Console.SetCursorPosition(Left+Width/8, _theWorm.Top-3);
         Console.Write("Welcome to Worm, press any key to start!");
+        Thread.Sleep(500);
         Console.ReadKey(true);
+        Console.CursorVisible = false;
 
         Console.SetCursorPosition(_theWorm.Left, _theWorm.Top-1);
         Console.Write("3...");
@@ -51,6 +53,7 @@ public class Game : GameBoard
     {
         while(true)
         {
+            Console.CursorVisible = false;
             _theWorm.Advance();
             if(AteFruit())
             {
@@ -68,7 +71,8 @@ public class Game : GameBoard
                 Console.Write("Press any key to restart");
                 return;
             }
-            Thread.Sleep(CalcSpeed());
+            int delay = CalcSpeed();
+            Thread.Sleep(delay);
         }
     }
     private bool GameOver()
@@ -121,6 +125,7 @@ public class Game : GameBoard
                 break;
             }
         }
+        Thread.Sleep(250);
         Console.SetCursorPosition(Left+Width/4, Top+Height/2-3);
         Console.Write("".PadRight(50));
         Console.SetCursorPosition(Left+Width/4, Top+Height/2-2);
@@ -153,7 +158,7 @@ public class Game : GameBoard
     private int CalcSpeed()
     {
         int fruitsComsumed = _theWorm.Length - _defaultWormLength;
-        int delay = 250 - fruitsComsumed*10;
+        int delay = 150 - fruitsComsumed*10;
         if(delay<30) return 30;
         return delay;
     }
