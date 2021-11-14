@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using System.Linq;
 using System.Collections.Generic;
 public class Game : GameBoard
 {
@@ -44,7 +45,7 @@ public class Game : GameBoard
         Console.Write("".PadRight(6));
 
         DrawBoard();
-        GenerateFruits(3,8);
+        GenerateFruits(5,10);
 
         _gameThread.Start();
         GetInput();
@@ -57,7 +58,7 @@ public class Game : GameBoard
             _theWorm.Advance();
             if(AteFruit())
             {
-                _theWorm.Length++;
+                _theWorm.Length+=3;
                 Console.SetCursorPosition(Left+1, Top-1);
                 Console.Write("Worm length: {0}", _theWorm.Length);
             }else if(GameOver())
@@ -81,8 +82,10 @@ public class Game : GameBoard
         if(_theWorm.Top <= Top) return true;
         if(_theWorm.Left >= Left+Width) return true;
         if(_theWorm.Top >= Top+Height) return true;
-        foreach(WormSegment seg in _theWorm.Segments)
+
+        for(int i = 1; i<_theWorm.Length; i++)
         {
+            var seg = _theWorm.Segments[i];
             if(_theWorm.Top == seg.Top && _theWorm.Left == seg.Left) return true;
         }
         return false;
@@ -96,7 +99,7 @@ public class Game : GameBoard
                 _fruits.Remove(fruit);
                 if(_fruits.Count == 0)
                 {
-                    GenerateFruits(3,8);
+                    GenerateFruits(1, 10);
                 }
                 return true;
             }
@@ -150,15 +153,38 @@ public class Game : GameBoard
         int numberOfFruits = random.Next(min,max);
         while(numberOfFruits > 0)
         {
-            _fruits.Add(new Fruit(Left, Top, Height));
+            MakeARandomFruit();
             numberOfFruits--;
         }
     }
+    private void MakeARandomFruit()
+    {
+        Fruit newFruit;
+        Random random = new Random();
+        int left = random.Next(Left+1, Left+Width);
+        int top = random.Next(Top+1, Top+Height);
+        while(FruitStackedOnOtherEntity(left, top))
+        {
+            left = random.Next(Left+1, Left+Width);
+            top = random.Next(Top+1, Top+Height);
+        }
+        newFruit = new Fruit(left, top);
+        _fruits.Add(newFruit);
+        
+    }
+    private bool FruitStackedOnOtherEntity(int left, int top)
+    {
+        bool result = _theWorm.Segments.Any(seg => 
+        seg.Top == top && seg.Left == left) ||
+        _fruits.Any(fruit =>
+        fruit.Top == top && fruit.Left == left);
+        return result;
+    }
     private int CalcSpeed()
     {
-        int fruitsComsumed = _theWorm.Length - _defaultWormLength;
-        int delay = 150 - fruitsComsumed*2;
-        if(delay<30) return 30;
+        // int fruitsComsumed = _theWorm.Length - _defaultWormLength;
+        int delay = 200 - _theWorm.Left/2;
+        if(delay<100) return 100;
         return delay;
     }
 }

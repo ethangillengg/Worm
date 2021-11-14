@@ -15,9 +15,9 @@ public class Entity
         get => _top;
         set
         {
-            Erase();
+            // Erase();
             _top = value;
-            Draw();
+            // Draw();
         }
     }
     protected int _top;
@@ -25,9 +25,9 @@ public class Entity
         get => _left;
         set
         {
-            Erase();
+            // Erase();
             _left = value;
-            Draw();
+            // Draw();
         }
     }
     protected int _left;
