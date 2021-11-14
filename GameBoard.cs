@@ -1,39 +1,39 @@
 using System;
 public class GameBoard
 {
-    private int _top;
-    private int _left;
-    private int _height;
-    private int _width;
+    protected int Top;
+    protected int Left;
+    protected int Height;
+    protected int Width;
 
     public GameBoard(int left, int top, int height)
     {
-        _top = top;
-        _left = left;
-        _height = height;
-        _width = height*2;
-
+        Top = top;
+        Left = left;
+        Height = height;
+        Width = height*2;
         DrawBoard();
     }
     public void DrawBoard()
     {
+
+
         string topBorder = " ";
-        for(int i = 1; i < _width; i++) topBorder+="-";
+        for(int i = 1; i < Width; i++) topBorder+="-";
 
-        Console.SetCursorPosition(_left, _top);
+        Console.SetCursorPosition(Left, Top);
         Console.Write(topBorder);
 
-        Console.SetCursorPosition(_left, _top+_height);
+        Console.SetCursorPosition(Left, Top+Height);
         Console.Write(topBorder);
 
-        for(int i = 1; i < _height; i++)
+        for(int i = 1; i < Height; i++)
         {
-            Console.SetCursorPosition(_left, _top+i);
+            Console.SetCursorPosition(Left, Top+i);
             Console.Write("|");
 
-            Console.SetCursorPosition(_left+_width, _top+i);
+            Console.SetCursorPosition(Left+Width, Top+i);
             Console.Write("|");
         }
-
     }
 }

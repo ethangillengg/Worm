@@ -1,13 +1,14 @@
 ﻿using System;
 
-namespace Worm
+namespace WormGame
 {
     class Program
     {
         static void Main(string[] args)
         {
-            var board = new GameBoard(10,3,20);
-            Console.ReadKey();
+            Console.CursorVisible = false;
+            var game = new Game(10,3,20);
+            game.StartGame();
         }
     }
 }
