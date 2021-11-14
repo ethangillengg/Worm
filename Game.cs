@@ -103,7 +103,6 @@ public class Game : GameBoard
         }
         return false;
     }
-    
     private void GetInput()
     {
         
@@ -158,7 +157,7 @@ public class Game : GameBoard
     private int CalcSpeed()
     {
         int fruitsComsumed = _theWorm.Length - _defaultWormLength;
-        int delay = 150 - fruitsComsumed*10;
+        int delay = 150 - fruitsComsumed*2;
         if(delay<30) return 30;
         return delay;
     }
