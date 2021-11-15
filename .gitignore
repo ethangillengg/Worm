@@ -2,3 +2,5 @@
 obj/
 Entity/
 Entity/Fruit.cs
+Entity/Fruit.cs
+*.cs
