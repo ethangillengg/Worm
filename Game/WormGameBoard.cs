@@ -7,7 +7,7 @@ public class WormGameBoard : GameBoard
     /*A game board for the worm game
  *RESPONSIBILITES:
  * - Stores the entities used in the game
- * - Can print and erase all entities and messages used in the worm game
+ * - Can print and erase all entities  used in the worm game
  * - Defines default lose and welcome messages for the worm game
 */
     public override string WelcomeMessage{get => "Welcome to Worm, press any key to start!";} //A default welcome message for the worm game
