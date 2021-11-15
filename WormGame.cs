@@ -10,7 +10,7 @@ public class WormGame : GameBoard
  * - Can start and restart a game
 */
     private static readonly int _defaultWormLength = 5; //Default length of the worm
-    private static readonly Tuple<int, int> _numberOfFruit = new Tuple<int, int>(1,10); //The minimum and maximum number of fruit to be generated on the board
+    private static readonly Tuple<int, int> _numberOfFruit = new Tuple<int, int>(3,10); //The minimum and maximum number of fruit to be generated on the board
     private List<Fruit> _fruits = new List<Fruit>(); //A list of all the fruits in the game
     private Worm _theWorm; //The worm used in the game
     private Thread _gameThread; //A thread to run the game (the main thread is used for user inputs)
@@ -250,8 +250,6 @@ public class WormGame : GameBoard
     {
         foreach(Entity entity in Entities) entity.EraseEntity();
     }
-
-
     private int CalcDelay() //Calculates the delay to be used per "worm advance". It is based on the worms current length
     {
         int delay = 200 - _theWorm.Length/2;

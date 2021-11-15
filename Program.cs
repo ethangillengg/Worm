@@ -9,7 +9,7 @@ class Program
         Console.CursorVisible = false;
         
         //Create a new game and start it
-        var wormGame = new WormGame(10,3,60,30);
+        var wormGame = new WormGame(10, 3, 60, 30);
         wormGame.StartGame();
     }
 }

@@ -16,7 +16,6 @@ public class Worm
     private WormSegment _head{get => _segments[0];} //Return the head of the worm
     public WormSegment Tail{get => new WormSegment(_tail);} //Return a copy of the tail of the worm
     private WormSegment _tail{get => _segments[Length-1];} //Return the tail of the worm
-
     public int Length{
         get => _segments.Count; //Return the number of worm segments
         set
@@ -39,7 +38,8 @@ public class Worm
     }
     private List<WormSegment> _segments = new List<WormSegment>(); //List of the segments in the worm
     public ConsoleKey Input{get; set;} = ConsoleKey.A; //Stores the last input made to the worm (for controlling movement)
-    public static readonly ConsoleColor DefaultHeadColor = ConsoleColor.Red; //Default color for the head of the worm
+    public static readonly ConsoleColor DefaultHeadColor = ConsoleColor.White; //Default color for the head of the worm
+    
     public Worm(int left, int top, int length = 5)
     {
         while(--length >= 0)
@@ -88,10 +88,5 @@ public class Worm
         newHead.PrintEntity(); //Print the new head since its color was updated
         _segments.Insert(0, newHead); //Insert the head to the list
     }
-    public void EraseWorm() //Erases all the segments of the worm
-    {
-        foreach(WormSegment seg in _segments) seg.EraseEntity();
-    }
-
-
+    public void EraseWorm(){foreach(WormSegment seg in _segments) seg.EraseEntity();} //Erases all the segments of the worm
 }
