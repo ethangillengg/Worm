@@ -140,7 +140,7 @@ public class Game : GameBoard
         Console.SetCursorPosition(Left+1, Top-1);
         Console.Write("".PadRight(40));
         _theWorm.EraseWorm();
-        foreach(Fruit fruit in _fruits) fruit.Erase();
+        foreach(Fruit fruit in _fruits) fruit.EraseEntity();
         _fruits = new List<Fruit>();
         DrawBoard();
         _theWorm = new Worm(Left+Width/2, Top+Height/2, _defaultWormLength);
@@ -161,14 +161,15 @@ public class Game : GameBoard
     {
         Fruit newFruit;
         Random random = new Random();
-        int left = random.Next(Left+1, Left+Width);
-        int top = random.Next(Top+1, Top+Height);
-        while(FruitStackedOnOtherEntity(left, top))
+        var pos = new Position();
+        pos.Left = random.Next(Left+1, Left+Width);
+        pos.Top = random.Next(Top+1, Top+Height);
+        while(FruitStackedOnOtherEntity(pos.Left, pos.Top))
         {
-            left = random.Next(Left+1, Left+Width);
-            top = random.Next(Top+1, Top+Height);
+            pos.Left = random.Next(Left+1, Left+Width);
+            pos.Top = random.Next(Top+1, Top+Height);
         }
-        newFruit = new Fruit(left, top);
+        newFruit = new Fruit(pos);
         _fruits.Add(newFruit);
         
     }
