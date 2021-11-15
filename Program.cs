@@ -1,16 +1,16 @@
 ﻿using System;
 
-namespace WormGame
+class Program
 {
-    class Program
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
-        {
-            Console.Clear();
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
-            Console.CursorVisible = false;
-            var game = new Game(10,3,25);
-            game.StartGame();
-        }
+        //Clear the console to make sure there is nothing on the screen
+        Console.Clear();
+        Console.CursorVisible = false;
+        
+        //Create a new game and start it
+        var wormGame = new WormGame(10,3,60,30);
+        wormGame.StartGame();
     }
 }
+

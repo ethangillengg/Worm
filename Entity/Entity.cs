@@ -1,14 +1,15 @@
 using System;
+
 public abstract class Entity
 {
-    public Position Pos
-    { 
-        get => _pos; 
-        set => _pos = value;
-    }  
-    private Position _pos = new Position(0,0); //Position of the entity on the Console
-    public int Top{get => _pos.Top;}
-    public int Left{get => _pos.Left;}
+/*An abstract class for an entity on the console
+ *RESPONSIBILITES:
+ * - Keeps track of position and color of the entity
+ * - Can print the entity to the console
+ * - Can erase te entity from the console
+*/
+    public int Top{get; set;}
+    public int Left{get; set;}
     public virtual ConsoleColor Color //Allow color to be changed
     {
         get => _color;
@@ -22,17 +23,14 @@ public abstract class Entity
     public Entity(string entity = "", int left = 0, int top = 0)
     {
         _body = entity;
-        _pos.Left = left;
-        _pos.Top = top;
+        Left = left;
+        Top = top;
         PrintEntity();
     }
-    public Entity(string entity, Position pos): this(entity, pos.Left, pos.Top){ }
     public Entity(int left, int top): this("", left, top){ }
-    public Entity(Position pos): this("", pos){ }
-
     public void PrintEntity() //Method to print the entity
     {
-        Console.SetCursorPosition(Pos.Left, Pos.Top); 
+        Console.SetCursorPosition(Left, Top); 
         Console.ForegroundColor = Color;
         Console.Write(Body);
         Console.ResetColor(); //Reset the color of the console print
@@ -40,7 +38,7 @@ public abstract class Entity
 
     public void EraseEntity() //Method to erase the entity
     {
-        Console.SetCursorPosition(Pos.Left, Pos.Top);
+        Console.SetCursorPosition(Left, Top);
         Console.Write("".PadRight(Body.Length));
     }
 }
