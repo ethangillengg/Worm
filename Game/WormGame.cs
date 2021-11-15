@@ -2,32 +2,23 @@ using System;
 using System.Threading;
 using System.Linq;
 using System.Collections.Generic;
-public class WormGame : GameBoard
+public class WormGame : WormGameBoard
 {
 /*The worm game
  *RESPONSIBILITES:
- * - Stores all entities in the game (fruits, the worm)
  * - Can start and restart a game
+ * - Defines behavior for how a game works (how many fruit to generate, when to increment length of the worm, etc.)
 */
     private static readonly int _defaultWormLength = 5; //Default length of the worm
     private static readonly Tuple<int, int> _numberOfFruit = new Tuple<int, int>(3,10); //The minimum and maximum number of fruit to be generated on the board
-    private List<Fruit> _fruits = new List<Fruit>(); //A list of all the fruits in the game
-    private Worm _theWorm; //The worm used in the game
+
     private Thread _gameThread; //A thread to run the game (the main thread is used for user inputs)
-    public IList<Entity> Entities //A readonly list of all the entities currently in the game
-    {
-        get
-        {
-            var result = new List<Entity>();
-            result = result.Concat(_fruits).Concat(_theWorm.Segments).ToList();
-            return result.AsReadOnly();
-        }
-    }
+
     public WormGame(int left = 10, int top = 3, int width = 30, int height = 20):
     base(left, top, width, height)
     {
         //Make a worm that is placed in the middle of the board with a default length
-        _theWorm = new Worm(Left+Width/2, Top+Height/2, _defaultWormLength); 
+        _theWorm = new Worm(_left+_width/2, _top+_height/2, _defaultWormLength); 
     }
     public void StartGame()
     {
@@ -40,7 +31,7 @@ public class WormGame : GameBoard
 
         //Once a user presses a key, begin the countdown
         Console.ReadKey(true);
-        StartCountdown(); 
+        PrintCountdown(); 
 
         //Generate the fruits on the screen, and reprint the board
         GenerateFruits();
@@ -50,35 +41,7 @@ public class WormGame : GameBoard
         _gameThread.Start(); //The thread running the game starts here
         GetInput(); //The main thread is sent to go get user inputs
     }
-    private void PrintWelcomeMessage() //Prints a message welcoming the user
-    {
-        Console.SetCursorPosition(Left+Width/8, _theWorm.Top-3);
-        Console.Write("Welcome to Worm, press any key to start!");
-    }
-    private void PrintWormLength() //Prints the current worm's length
-    {
-        Console.SetCursorPosition(Left+1, Top-1);
-        Console.Write("Worm length: {0}".PadRight(20), _theWorm.Length);
-    }
-    private void StartCountdown() //Prints out a countdown above the worm signalling that the game is starting
-    {
-        Console.SetCursorPosition(_theWorm.Left, _theWorm.Top-1);
-        Console.Write("3...");
-        Thread.Sleep(1000);
-        Console.SetCursorPosition(_theWorm.Left, _theWorm.Top-1);
-        Console.Write("2...");
-        Thread.Sleep(1000);
-        Console.SetCursorPosition(_theWorm.Left, _theWorm.Top-1);
-        Console.Write("1...");
-        Thread.Sleep(1000);
-        Console.SetCursorPosition(_theWorm.Left, _theWorm.Top-1);
-        Console.Write("Go!   ");
-        Thread.Sleep(1000);
-        Console.SetCursorPosition(Left+Width/8, _theWorm.Top-3);
-        Console.Write("".PadRight(50));
-        Console.SetCursorPosition(_theWorm.Left, _theWorm.Top-1);
-        Console.Write("".PadRight(6));
-    }
+    
     private void RunGame() //Advances the worm, checks for fruit eaten/game over, recalculates the delay, and then waits until the next turn
     {
         int delay = CalcDelay(); //The delay per turn in milliseconds
@@ -107,30 +70,14 @@ public class WormGame : GameBoard
             Thread.Sleep(delay);
         }
     }
-    private void PrintLoseScreen() //Prints a lose screen
-    {
-        Console.ForegroundColor = ConsoleColor.DarkRed;
-        Console.SetCursorPosition(Left+Width/4, Top+Height/2-3);
-        Console.Write("You LOSE!!");
-        Console.ResetColor();
 
-        Console.SetCursorPosition(Left+Width/4, Top+Height/2-2);
-        Console.Write("Press any key to restart");
-    }
-    private void EraseLoseScreen() //Erases the lose screen
-    {
-        Console.SetCursorPosition(Left+Width/4, Top+Height/2-3);
-        Console.Write("".PadRight(50));
-        Console.SetCursorPosition(Left+Width/4, Top+Height/2-2);
-        Console.Write("".PadRight(50));
-    }
     private bool CheckIfGameOver() //Checks if the worm's head collided with a border of the game board or with one of it's own segments
     {
         //Check if the worm ran into a wall
-        if(_theWorm.Left <= Left) return true;
-        if(_theWorm.Top <= Top) return true;
-        if(_theWorm.Left >= Left+Width) return true;
-        if(_theWorm.Top >= Top+Height) return true;
+        if(_theWorm.Left <= _left) return true;
+        if(_theWorm.Top <= _top) return true;
+        if(_theWorm.Left >= _left+_width) return true;
+        if(_theWorm.Top >= _top+_height) return true;
 
         //Check if the worm ran into itself
         for(int i = 1; i<_theWorm.Length; i++)
@@ -193,8 +140,8 @@ public class WormGame : GameBoard
         while(CheckOnTopOfOtherEntity(left, top) || top == 0) //While the new fruit's position is on another entity (or is not yet set)
         {
             //Get a random position within the space of the board
-            left = random.Next(Left+1, Left+Width);
-            top = random.Next(Top+1, Top+Height);
+            left = random.Next(_left+1, _left+_width);
+            top = random.Next(_top+1, _top+_height);
         }
 
         //Create a new fruit with the random position and add it to the list of fruits
@@ -240,20 +187,15 @@ public class WormGame : GameBoard
 
         //Make a new list of fruits and a new worm
         _fruits = new List<Fruit>();
-        _theWorm = new Worm(Left+Width/2, Top+Height/2, _defaultWormLength);
+        _theWorm = new Worm(_left+_width/2, _top+_height/2, _defaultWormLength);
 
         //Start the game again
         StartGame();
     }
-    private void EraseFruits(){foreach(Fruit fruit in _fruits) fruit.EraseEntity();} //Erases all the fruits on the board
-    private void EraseAllEntities() //Erases all the entities on the board
-    {
-        foreach(Entity entity in Entities) entity.EraseEntity();
-    }
     private int CalcDelay() //Calculates the delay to be used per "worm advance". It is based on the worms current length
     {
-        int delay = 200 - _theWorm.Length/2;
-        if(delay<100) return 100;
+        int delay = 150 - _theWorm.Length/2;
+        if(delay<75) return 75;
         return delay;
     }
 }

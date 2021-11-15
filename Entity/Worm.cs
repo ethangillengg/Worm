@@ -38,7 +38,7 @@ public class Worm
     }
     private List<WormSegment> _segments = new List<WormSegment>(); //List of the segments in the worm
     public ConsoleKey Input{get; set;} = ConsoleKey.A; //Stores the last input made to the worm (for controlling movement)
-    public static readonly ConsoleColor DefaultHeadColor = ConsoleColor.White; //Default color for the head of the worm
+    public static readonly ConsoleColor DefaultHeadColor = ConsoleColor.Red; //Default color for the head of the worm
     
     public Worm(int left, int top, int length = 5)
     {
