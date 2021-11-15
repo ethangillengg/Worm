@@ -1,2 +1,4 @@
 .vscode/
 obj/
+Entity/
+Entity/Fruit.cs
