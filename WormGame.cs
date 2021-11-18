@@ -1,6 +1,7 @@
 using System;
-using System.Threading;
 using System.Linq;
+using System.Threading;
+using System.Diagnostics;
 using System.Collections.Generic;
 public class WormGame : GameBoard
 {
@@ -81,9 +82,11 @@ public class WormGame : GameBoard
     }
     private void RunGame() //Advances the worm, checks for fruit eaten/game over, recalculates the delay, and then waits until the next turn
     {
-        int delay = CalcDelay(); //The delay per turn in milliseconds
+        int delay = DelayBasedOnWormLength(); //The delay per turn in milliseconds
+        Stopwatch frameTimer = new Stopwatch(); //Calculate how long each frame took to run
         while(true) //Run until the game is over (then it uses return to get out of the while loop)
         {
+            frameTimer.Restart();
             Console.CursorVisible = false; //Make the cursor invisible (sometimes it goes visible when the window size of the terminal is changed)
             _theWorm.Advance(); //Advance the worm one tile
 
@@ -93,16 +96,19 @@ public class WormGame : GameBoard
                 //reprint that length to the top of the screen
                 _theWorm.Length+=3;
                 PrintWormLength();
-
-                //Recalculate the delay that the thread waits every turn
-                //since it is based on the length of the worm
-                delay = CalcDelay();
             }else if(CheckIfGameOver())
             {
                 //If the game is over, print a lose screen and end the thread by returning the function
                 PrintLoseScreen();
                 return;
             }
+
+            //Calculate the delay based on the worm length and how long the frame took to run
+            //subtracting how long the frame took ensures that the delay is consistent
+            //no matter how long the thread took to do the frame.
+            delay = DelayBasedOnWormLength() - (int)frameTimer.ElapsedMilliseconds;
+            if(delay < 0) delay = 0;
+
             //Wait until the next turn
             Thread.Sleep(delay);
         }
@@ -250,7 +256,7 @@ public class WormGame : GameBoard
     {
         foreach(Entity entity in Entities) entity.EraseEntity();
     }
-    private int CalcDelay() //Calculates the delay to be used per "worm advance". It is based on the worms current length
+    private int DelayBasedOnWormLength() //Calculates the delay to be used per "worm advance". It is based on the worms current length
     {
         int delay = 200 - _theWorm.Length/2;
         if(delay<100) return 100;

@@ -6,7 +6,7 @@ public class WormSegment : Entity
  * - Sets the default body & color of a worm segment entity
  * - Allows the color of a worm segment to be changed
 */
-    public override string Body{get => "鬱";} //Set "O" as the default body of all worm segment entities
+    public override string Body{get => "O";} //Set "O" as the default body of all worm segment entities
     public override ConsoleColor Color{ //Allow changes to the color fo a segment
         get => _color;
         set => _color = value;
