@@ -258,7 +258,7 @@ public class WormGame : GameBoard
     }
     private int DelayBasedOnWormLength() //Calculates the delay to be used per "worm advance". It is based on the worms current length
     {
-        int delay = 200 - _theWorm.Length/2;
+        int delay = 200 - _theWorm.Length;
         if(delay<100) return 100;
         return delay;
     }
