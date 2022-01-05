@@ -6,7 +6,7 @@ public abstract class Entity
  *RESPONSIBILITES:
  * - Keeps track of position and color of the entity
  * - Can print the entity to the console
- * - Can erase te entity from the console
+ * - Can erase the entity from the console
 */
     public int Top{get; set;}
     public int Left{get; set;}
